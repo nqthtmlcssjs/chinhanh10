@@ -1,4 +1,3 @@
-```javascript
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
 
 import {
@@ -22,17 +21,15 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 
-/* Danh sách email được xem nội bộ */
 const allowedEmails = [
   "nqt.tt.md.hn@gmail.com"
 ];
 
 window.loginGoogle = () => {
-  signInWithPopup(auth, provider)
-    .catch(error => {
-      console.error(error);
-      alert("Không thể đăng nhập Google");
-    });
+  signInWithPopup(auth, provider).catch(error => {
+    console.error(error);
+    alert("Không thể đăng nhập Google");
+  });
 };
 
 window.logoutGoogle = () => {
@@ -40,87 +37,44 @@ window.logoutGoogle = () => {
 };
 
 onAuthStateChanged(auth, (user) => {
-
   const loginBox = document.getElementById("login-box");
   const noiBo = document.getElementById("noi-bo");
 
   if (!loginBox || !noiBo) return;
 
-  /* CHƯA ĐĂNG NHẬP */
   if (!user) {
-
     noiBo.style.display = "none";
 
     loginBox.innerHTML = `
-      <div class="user-card">
-
-        <h3>🔒 Khu vực nội bộ</h3>
-
-        <p>
-          Vui lòng đăng nhập bằng tài khoản Google
-          được cấp quyền để xem lịch công việc.
-        </p>
-
-        <button class="btn-login" onclick="loginGoogle()">
-          Đăng nhập Google
-        </button>
-
-      </div>
+      <p>
+        🔒 Bạn phải đăng nhập bằng tài khoản được cấp quyền để xem nội dung này.
+        <button onclick="loginGoogle()">Đăng nhập Google</button>
+      </p>
     `;
 
     return;
   }
 
-  /* KHÔNG CÓ QUYỀN */
   if (!allowedEmails.includes(user.email)) {
-
     noiBo.style.display = "none";
 
     loginBox.innerHTML = `
-      <div class="user-card">
-
-        <h3 style="color:#dc2626">
-          ⛔ Không có quyền truy cập
-        </h3>
-
-        <p>${user.email}</p>
-
-        <button class="btn-logout" onclick="logoutGoogle()">
-          Đăng xuất
-        </button>
-
-      </div>
+      <p style="color:#dc2626;font-weight:700;">
+        ⛔ Tài khoản ${user.email} không có quyền truy cập.
+        <button onclick="logoutGoogle()">Đăng xuất</button>
+      </p>
     `;
 
     return;
   }
 
-  /* ĐƯỢC PHÉP */
   noiBo.style.display = "block";
 
   loginBox.innerHTML = `
-    <div class="user-card">
-
-      <div class="user-avatar">
-        👤
-      </div>
-
-      <div class="user-info">
-
-        <h3>
-          Xin chào, ${user.displayName}
-        </h3>
-
-        <p>${user.email}</p>
-
-      </div>
-
-      <button class="btn-logout" onclick="logoutGoogle()">
-        Đăng xuất
-      </button>
-
-    </div>
+    <p>
+      👤 Đang đăng nhập: <b>${user.displayName}</b>
+      (${user.email})
+      <button onclick="logoutGoogle()">Đăng xuất</button>
+    </p>
   `;
-
 });
-```
