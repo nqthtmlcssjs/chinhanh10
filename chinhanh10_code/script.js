@@ -20,8 +20,8 @@ fetch(API_URL)
           <td>${item.Ngay || ""}</td>
           <td>${item.Gio || ""}</td>
           <td>${item.NoiDung || ""}</td>
-          <td>${item.NguoiPhuTrach || ""}</td>
-          <td>${item.TrangThai || ""}</td>
+          <td>${item.Thanhphanthamgia || ""}</td>
+          <td>${item.DiaDiem || ""}</td>
         </tr>
       `;
     });
