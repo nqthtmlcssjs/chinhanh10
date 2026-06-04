@@ -387,52 +387,40 @@ footer p{
     }
 
 }
-.login-box{
+/* ================= ĐĂNG NHẬP NỘI BỘ ================= */
+
+.login-note{
     text-align:center;
-    margin:25px 0;
+    margin:-20px 0 35px;
 }
 
-.login-box button{
-    background:#0d5cb6;
-    color:#fff;
-    border:none;
-    padding:12px 24px;
-    border-radius:8px;
-    cursor:pointer;
-    font-size:16px;
-    font-weight:600;
-}
-.login-box{
-    max-width:520px;
-    margin:40px auto 20px;
+.login-note p{
+    display:inline-block;
     background:#fff;
-    border-radius:18px;
-    padding:20px 25px;
-    text-align:center;
-    box-shadow:0 8px 25px rgba(0,0,0,.06);
+    padding:14px 22px;
+    border-radius:999px;
     border:1px solid #e5e7eb;
-    color:#334155;
+    box-shadow:0 8px 25px rgba(0,0,0,.06);
+
+    color:#475569;
     font-size:15px;
-    line-height:1.6;
 }
 
-.login-box b{
+.login-note b{
     color:#003d82;
-    font-size:17px;
 }
 
-.login-box button{
-    margin-top:12px;
+.login-note button{
+    margin-left:10px;
     background:#0056b3;
     color:#fff;
     border:none;
-    padding:10px 22px;
+    padding:8px 16px;
     border-radius:999px;
     cursor:pointer;
-    font-size:15px;
     font-weight:700;
 }
 
-.login-box button:hover{
+.login-note button:hover{
     background:#003d82;
 }
