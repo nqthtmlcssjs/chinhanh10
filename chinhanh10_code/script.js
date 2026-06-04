@@ -31,11 +31,11 @@ function loadTasks() {
       data.forEach(item => {
         tbody.innerHTML += `
           <tr>
-            <td>${hienThiNgay(item.Ngay)}</td>
-            <td>${item.Gio || ""}</td>
-            <td>${item.NoiDung || ""}</td>
-            <td>${item.Thanhphanthamgia || ""}</td>
-            <td>${item.DiaDiem || ""}</td>
+            <td>${hienThiNgay(item.thoigian)}</td>
+            <td>${item.diadiem || ""}</td>
+            <td>${item.noidung || ""}</td>
+            <td>${item.hinhthucthamdu || ""}</td>
+            <td>${item.thanhphanthamdu || ""}</td>
           </tr>
         `;
       });
