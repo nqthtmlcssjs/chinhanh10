@@ -1,7 +1,20 @@
 const API_URL = "https://script.google.com/macros/s/AKfycbzBpjLcr3weEaJQx9IsW3yrt3tvpea3mjgfv3gfDZXnEQS3dkrgEHcbIrx8qOa6yUF7/exec";
 
+function hienThiNgay(value) {
+  if (!value) return "";
+
+  if (typeof value === "string" && value.includes("T")) {
+    const d = new Date(value);
+    return d.toLocaleDateString("vi-VN", {
+      timeZone: "Asia/Ho_Chi_Minh"
+    });
+  }
+
+  return value;
+}
+
 function loadTasks() {
-  fetch(API_URL)
+  fetch(API_URL + "?t=" + new Date().getTime())
     .then(response => response.json())
     .then(data => {
       const tbody = document.getElementById("task-list");
@@ -18,7 +31,7 @@ function loadTasks() {
       data.forEach(item => {
         tbody.innerHTML += `
           <tr>
-            <td>${item.Ngay || ""}</td>
+            <td>${hienThiNgay(item.Ngay)}</td>
             <td>${item.Gio || ""}</td>
             <td>${item.NoiDung || ""}</td>
             <td>${item.Thanhphanthamgia || ""}</td>
@@ -26,18 +39,8 @@ function loadTasks() {
           </tr>
         `;
       });
-    })
-    .catch(error => {
-      const tbody = document.getElementById("task-list");
-
-      if (tbody) {
-        tbody.innerHTML = "<tr><td colspan='5'>Không tải được dữ liệu</td></tr>";
-      }
-
-      console.error(error);
     });
 }
 
 loadTasks();
-
 setInterval(loadTasks, 5000);
