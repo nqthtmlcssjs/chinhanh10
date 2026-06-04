@@ -34,7 +34,7 @@ function loadTasks() {
         tbody.innerHTML = "<tr><td colspan='5'>Không tải được dữ liệu</td></tr>";
       }
 
-      console.error("Lỗi tải dữ liệu:", error);
+      console.error(error);
     });
 }
 
