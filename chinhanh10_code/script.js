@@ -11,7 +11,7 @@ function loadTasks() {
       tbody.innerHTML = "";
 
       if (data.length === 0) {
-        tbody.innerHTML = "<tr><td colspan='5'>Chưa có công việc nào</td></tr>";
+        tbody.innerHTML = "<tr><td colspan='5'>Chưa có lịch công việc</td></tr>";
         return;
       }
 
