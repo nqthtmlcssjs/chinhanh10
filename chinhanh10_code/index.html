@@ -99,35 +99,54 @@
             </a>
         </div>
     </section>
-<!-- LỊCH CÔNG VIỆC -->
-<h2 class="section-title">Lịch công việc - Thông báo nội bộ</h2>
+```html
+<!-- ĐĂNG NHẬP GOOGLE -->
+<div id="login-box" class="login-box"></div>
 
-<section class="task-box">
-    <table class="task-table">
-        <thead>
-            <tr>
-                <th>Thời gian</th>
-                <th>Địa Điểm</th>
-                <th>Nội dung</th>
-                <th>Hình thức tham dự</th>
-                <th>Thành phần tham dự</th>
-            </tr>
-        </thead>
-        <tbody id="task-list">
-            <tr>
-                <td colspan="5">Đang tải dữ liệu...</td>
-            </tr>
-        </tbody>
-    </table>
-</section>
-    <!-- FOOTER -->
-    <footer>
-        <hr>
-        <h3>Chi nhánh Trung tâm Phục vụ hành chính công số 10</h3>
-        <p>Trụ sở chính: Số 97 Kim Bài, xã Thanh Oai, thành phố Hà Nội</p>
-    </footer>
+<!-- KHU VỰC NỘI BỘ -->
+<div id="noi-bo" style="display:none;">
+
+    <h2 class="section-title">
+        Lịch công việc - Thông báo nội bộ
+    </h2>
+
+    <section class="task-box">
+        <table class="task-table">
+            <thead>
+                <tr>
+                    <th>Thời gian</th>
+                    <th>Địa Điểm</th>
+                    <th>Nội dung</th>
+                    <th>Hình thức tham dự</th>
+                    <th>Thành phần tham dự</th>
+                </tr>
+            </thead>
+
+            <tbody id="task-list">
+                <tr>
+                    <td colspan="5">
+                        Đang tải dữ liệu...
+                    </td>
+                </tr>
+            </tbody>
+
+        </table>
+    </section>
 
 </div>
+
+<!-- FOOTER -->
+<footer>
+    <hr>
+    <h3>Chi nhánh Trung tâm Phục vụ hành chính công số 10</h3>
+    <p>Trụ sở chính: Số 97 Kim Bài, xã Thanh Oai, thành phố Hà Nội</p>
+</footer>
+
+</div>
+
 <script src="script.js?v=1000"></script>
+
+<script type="module" src="firebase-auth.js"></script>
+
 </body>
 </html>
