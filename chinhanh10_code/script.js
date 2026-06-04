@@ -31,7 +31,7 @@ function loadTasks() {
       data.forEach(item => {
         tbody.innerHTML += `
           <tr>
-            <td>${hienThiNgay(item.thoigian)}</td>
+            <td>${item.thoigian || ""}</td>
             <td>${item.diadiem || ""}</td>
             <td>${item.noidung || ""}</td>
             <td>${item.hinhthucthamdu || ""}</td>
