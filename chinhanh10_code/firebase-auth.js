@@ -22,7 +22,8 @@ const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 
 const allowedEmails = [
-  "nqt.tt.md.hn@gmail.com"
+  "nqt.tt.md.hn@gmail.com",
+  "maihuongnguyen0702@gmail.com"
 ];
 
 window.loginGoogle = () => {
