@@ -339,3 +339,51 @@ footer p{
     }
 
 }
+/* ================= LỊCH CÔNG VIỆC ================= */
+
+.task-box{
+    background:#fff;
+    border-radius:20px;
+    padding:25px;
+    box-shadow:0 8px 25px rgba(0,0,0,.06);
+    overflow-x:auto;
+}
+
+.task-table{
+    width:100%;
+    border-collapse:collapse;
+    font-size:15px;
+}
+
+.task-table th{
+    background:#0056b3;
+    color:#fff;
+    padding:14px;
+    text-align:center;
+}
+
+.task-table td{
+    border:1px solid #e5e7eb;
+    padding:12px;
+}
+
+.task-table tr:nth-child(even){
+    background:#f8fbff;
+}
+
+.task-table tr:hover{
+    background:#eef6ff;
+}
+
+@media(max-width:768px){
+
+    .task-table{
+        font-size:13px;
+    }
+
+    .task-table th,
+    .task-table td{
+        padding:8px;
+    }
+
+}
