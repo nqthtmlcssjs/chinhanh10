@@ -8,6 +8,8 @@ import {
   onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
 
+const API_URL = "https://script.google.com/macros/s/AKfycbzBpjLcr3weEaJQx9IsW3yrt3tvpea3mjgfv3gfDZXnEQS3dkrgEHcbIrx8qOa6yUF7/exec";
+
 const firebaseConfig = {
   apiKey: "AIzaSyCyHS-jYLZQvrysbhV7UhQOtl42CX7Em_g",
   authDomain: "chinhanh10-web.firebaseapp.com",
@@ -21,10 +23,10 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 
-const allowedEmails = [
-  "nqt.tt.md.hn@gmail.com",
-  "maihuongnguyen0702@gmail.com"
-];
+async function getAllowedUsers() {
+  const response = await fetch(API_URL + "?action=users&t=" + Date.now());
+  return await response.json();
+}
 
 window.loginGoogle = () => {
   signInWithPopup(auth, provider).catch(error => {
@@ -37,7 +39,7 @@ window.logoutGoogle = () => {
   signOut(auth);
 };
 
-onAuthStateChanged(auth, (user) => {
+onAuthStateChanged(auth, async (user) => {
   const loginBox = document.getElementById("login-box");
   const noiBo = document.getElementById("noi-bo");
 
@@ -56,26 +58,48 @@ onAuthStateChanged(auth, (user) => {
     return;
   }
 
-  if (!allowedEmails.includes(user.email)) {
-    noiBo.style.display = "none";
+  try {
+    const users = await getAllowedUsers();
+
+    const email = user.email.toLowerCase().trim();
+
+    const currentUser = users.find(u =>
+      String(u.email).toLowerCase().trim() === email
+    );
+
+    if (!currentUser) {
+      noiBo.style.display = "none";
+
+      loginBox.innerHTML = `
+        <p style="color:#dc2626;font-weight:700;">
+          ⛔ Tài khoản ${email} không có quyền truy cập.
+          <button onclick="logoutGoogle()">Đăng xuất</button>
+        </p>
+      `;
+
+      return;
+    }
+
+    noiBo.style.display = "block";
 
     loginBox.innerHTML = `
-      <p style="color:#dc2626;font-weight:700;">
-        ⛔ Tài khoản ${user.email} không có quyền truy cập.
+      <p>
+        👤 Đang đăng nhập: <b>${currentUser.hoten || user.displayName || "Cán bộ"}</b>
+        (${email})
         <button onclick="logoutGoogle()">Đăng xuất</button>
       </p>
     `;
 
-    return;
+  } catch (error) {
+    console.error(error);
+
+    noiBo.style.display = "none";
+
+    loginBox.innerHTML = `
+      <p style="color:#dc2626;font-weight:700;">
+        Không tải được danh sách phân quyền.
+        <button onclick="logoutGoogle()">Đăng xuất</button>
+      </p>
+    `;
   }
-
-  noiBo.style.display = "block";
-
-  loginBox.innerHTML = `
-    <p>
-      👤 Đang đăng nhập: <b>${user.displayName}</b>
-      (${user.email})
-      <button onclick="logoutGoogle()">Đăng xuất</button>
-    </p>
-  `;
 });
