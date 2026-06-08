@@ -23,32 +23,9 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 
-const USER_CACHE_KEY = "phan_quyen_cache";
-const USER_CACHE_TIME = 5 * 60 * 1000;
-
 async function getAllowedUsers() {
-  const cache = localStorage.getItem(USER_CACHE_KEY);
-
-  if (cache) {
-    const saved = JSON.parse(cache);
-
-    if (Date.now() - saved.time < USER_CACHE_TIME) {
-      return saved.data;
-    }
-  }
-
-  const response = await fetch(API_URL + "?action=users&t=" + Date.now());
-  const data = await response.json();
-
-  localStorage.setItem(
-    USER_CACHE_KEY,
-    JSON.stringify({
-      time: Date.now(),
-      data: data
-    })
-  );
-
-  return data;
+  const response = await fetch(API_URL + "?action=users");
+  return await response.json();
 }
 
 window.loginGoogle = () => {
