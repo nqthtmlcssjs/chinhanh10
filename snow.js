@@ -1,31 +1,32 @@
-const snowContainer = document.createElement("div");
-snowContainer.id = "snow";
-document.body.appendChild(snowContainer);
+document.addEventListener("DOMContentLoaded", function () {
+    const oldSnow = document.getElementById("snow");
+    if (oldSnow) oldSnow.remove();
 
-const flakes = ["❄", "❅", "❆"];
+    const snowContainer = document.createElement("div");
+    snowContainer.id = "snow";
+    document.body.appendChild(snowContainer);
 
-for(let i = 0; i < 60; i++){
+    const flakes = ["❄", "❅", "❆"];
 
-    const snow = document.createElement("span");
+    for (let i = 0; i < 40; i++) {
+        const snow = document.createElement("span");
 
-    snow.className = "snowflake";
-    snow.innerHTML =
-        flakes[Math.floor(Math.random()*flakes.length)];
+        snow.className = "snowflake";
+        snow.textContent = flakes[Math.floor(Math.random() * flakes.length)];
 
-    snow.style.left =
-        Math.random() * 100 + "%";
+        const size = 8 + Math.random() * 45;
 
-    snow.style.fontSize =
-        (12 + Math.random()*38) + "px";
+        snow.style.left = Math.random() * 100 + "%";
+        snow.style.fontSize = size + "px";
+        snow.style.opacity = 0.2 + Math.random() * 0.7;
+        snow.style.animationDelay = (-Math.random() * 25) + "s";
 
-    snow.style.opacity =
-        0.2 + Math.random()*0.8;
+        if (size > 35) {
+            snow.style.animationDuration = (40 + Math.random() * 30) + "s";
+        } else {
+            snow.style.animationDuration = (20 + Math.random() * 25) + "s";
+        }
 
-    snow.style.animationDuration =
-        (25 + Math.random()*40) + "s";
-
-    snow.style.animationDelay =
-        (-Math.random()*25) + "s";
-
-    snowContainer.appendChild(snow);
-}
+        snowContainer.appendChild(snow);
+    }
+});
