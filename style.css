@@ -424,3 +424,59 @@ footer p{
 .login-note button:hover{
     background:#003d82;
 }
+/* ================= TUYẾT RƠI ================= */
+
+#snow{
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    overflow:hidden;
+    z-index:0;
+}
+
+.snowflake{
+    position:absolute;
+    top:-60px;
+    color:#a5e4ec;
+    user-select:none;
+
+    text-shadow:
+        0 0 5px rgba(159, 217, 228, 0.8),
+        0 0 10px rgba(114, 239, 248, 0.6);
+
+    animation-name:snowFall;
+    animation-timing-function:linear;
+    animation-iteration-count:infinite;
+}
+
+@keyframes snowFall{
+
+    from{
+        transform:
+            translateY(-80px)
+            rotate(0deg);
+    }
+
+    to{
+        transform:
+            translateY(120vh)
+            rotate(360deg);
+    }
+}
+
+/* Nội dung nổi lên trên tuyết */
+
+.page,
+.header,
+.qr-main,
+.qr-box,
+.payment,
+.task-box,
+.grid,
+.item,
+.report-header,
+.login-note,
+footer{
+    position:relative;
+    z-index:1;
+}
