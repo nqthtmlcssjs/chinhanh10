@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Hệ thống báo cáo nội bộ - Chi nhánh số 10</title>
+
+<link rel="stylesheet" href="style.css?v=1001">
+<link rel="icon" type="image/x-icon" href="images/favicon.ico">
+
+<style>
+.report-header{
+    background:#fff;
+    border-radius:20px;
+    padding:30px;
+    text-align:center;
+    box-shadow:0 8px 25px rgba(0,0,0,.06);
+    margin-bottom:30px;
+}
+
+.report-header h1{
+    color:#003d82;
+    font-size:30px;
+    margin-bottom:10px;
+}
+
+.report-header p{
+    color:#475569;
+    font-weight:600;
+    font-size:18px;
+}
+
+.report-card a{
+    min-height:180px;
+}
+
+.report-card span{
+    font-size:48px;
+    margin-bottom:12px;
+}
+
+.report-card small{
+    margin-top:10px;
+    color:#64748b;
+    font-weight:600;
+}
+
+.back-home{
+    text-align:center;
+    margin-top:50px;
+}
+
+.back-home a{
+    display:inline-block;
+    background:#0056b3;
+    color:white;
+    padding:14px 28px;
+    border-radius:999px;
+    text-decoration:none;
+    font-weight:800;
+}
+
+.empty-box{
+    background:#fff;
+    border-radius:15px;
+    padding:20px;
+    text-align:center;
+    color:#64748b;
+    font-weight:600;
+    box-shadow:0 8px 25px rgba(0,0,0,.06);
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="page">
+
+    <div class="report-header">
+        <h1>📊 HỆ THỐNG BÁO CÁO NỘI BỘ</h1>
+        <p id="ten-diem">Đang tải dữ liệu...</p>
+    </div>
+
+    <h2 class="section-title">📋 Báo cáo chung</h2>
+    <section id="bao-cao-chung" class="grid"></section>
+
+    <h2 class="section-title">🏢 Báo cáo riêng</h2>
+    <section id="bao-cao-rieng" class="grid"></section>
+
+    <div class="back-home">
+        <a href="index.html">← Quay lại Trang chủ</a>
+    </div>
+
+</div>
+
+<script>
+
+const API_URL =
+"https://script.google.com/macros/s/AKfycbzgVoPJhFAS3AdWuKk5-W5jXsNPfTxvipIpAV0IxJO285KGOFI5lMRxl6-bFkakuR3U/exec";
+
+const TEN_DIEM = {
+    TamHung:"Điểm hỗ trợ dịch vụ công số Tam Hưng",
+    BinhMinh:"Điểm hỗ trợ dịch vụ công số Bình Minh",
+    ThanhOai:"Điểm hỗ trợ dịch vụ công số Thanh Oai",
+    DanHoa:"Điểm hỗ trợ dịch vụ công số Dân Hòa",
+    UngThien:"Điểm hỗ trợ dịch vụ công số Ứng Thiên",
+    VanDinh:"Điểm hỗ trợ dịch vụ công số Vân Đình",
+    HoaXa:"Điểm hỗ trợ dịch vụ công số Hòa Xá",
+    UngHoa:"Điểm hỗ trợ dịch vụ công số Ứng Hòa",
+    MyDuc:"Điểm hỗ trợ dịch vụ công số Mỹ Đức",
+    HuongSon:"Điểm hỗ trợ dịch vụ công số Hương Sơn",
+    HongSon:"Điểm hỗ trợ dịch vụ công số Hồng Sơn",
+    PhucSon:"Điểm hỗ trợ dịch vụ công số Phúc Sơn"
+};
+
+const params = new URLSearchParams(window.location.search);
+const diem = params.get("diem");
+
+document.getElementById("ten-diem").innerText =
+    TEN_DIEM[diem] || "Hệ thống báo cáo";
+
+function taoCard(item, icon){
+
+    return `
+        <div class="item report-card">
+            <a href="${item.link}" target="_blank">
+
+                <span>${icon}</span>
+
+                <p>${item.ten}</p>
+
+                <small>
+                    ${item.nhom || "Mở báo cáo"}
+                </small>
+
+            </a>
+        </div>
+    `;
+}
+
+fetch(API_URL + "?action=reports&t=" + Date.now())
+
+.then(response => response.json())
+
+.then(data => {
+
+    let htmlChung = "";
+    let htmlRieng = "";
+
+    data.forEach(item => {
+
+        const loai =
+        String(item.loai || "").trim();
+
+        const itemDiem =
+        String(item.diem || "").trim();
+
+        if (loai === "Chung") {
+
+            htmlChung +=
+            taoCard(item,"📋");
+
+        }
+
+        if (
+            loai === "Rieng" &&
+            itemDiem === diem
+        ) {
+
+            htmlRieng +=
+            taoCard(item,"🏢");
+
+        }
+
+    });
+
+    document.getElementById(
+        "bao-cao-chung"
+    ).innerHTML =
+        htmlChung ||
+        `<div class="empty-box">
+            Chưa có báo cáo chung.
+        </div>`;
+
+    document.getElementById(
+        "bao-cao-rieng"
+    ).innerHTML =
+        htmlRieng ||
+        `<div class="empty-box">
+            Chưa có báo cáo riêng cho điểm này.
+        </div>`;
+
+})
+
+.catch(error => {
+
+    console.error(error);
+
+    document.getElementById(
+        "bao-cao-chung"
+    ).innerHTML =
+        `<div class="empty-box">
+            Không tải được dữ liệu báo cáo.
+        </div>`;
+
+});
+
+</script>
+
+</body>
+</html>
