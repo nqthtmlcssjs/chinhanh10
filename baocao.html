@@ -6,7 +6,7 @@
 
 <title>Hệ thống báo cáo nội bộ - Chi nhánh số 10</title>
 
-<link rel="stylesheet" href="style.css?v=1002">
+<link rel="stylesheet" href="style.css?v=1003">
 <link rel="icon" type="image/x-icon" href="images/favicon.ico">
 
 <style>
@@ -91,7 +91,8 @@ const TEN_DIEM = {
 };
 
 const params = new URLSearchParams(window.location.search);
-const diem = params.get("diem");
+const diem = params.get("diem") || "";
+const diemLower = diem.toLowerCase();
 
 document.getElementById("ten-diem").innerText =
     TEN_DIEM[diem] || "Hệ thống báo cáo";
@@ -116,15 +117,41 @@ function taoCard(item, icon){
     `;
 }
 
+/* Users không cache trình duyệt để cập nhật Gmail nhanh */
 async function getUsers(){
-    const res = await fetch(API_URL + "?action=users&t=" + Date.now());
+    const res = await fetch(API_URL + "?action=users");
     return await res.json();
 }
 
-async function loadReports(){
-    const res = await fetch(API_URL + "?action=reports&t=" + Date.now());
+/* Reports cache 10 phút để mở báo cáo nhanh hơn */
+const REPORT_CACHE_KEY = "bao_cao_cache";
+const REPORT_CACHE_TIME = 10 * 60 * 1000;
+
+async function getReports(){
+    const cache = localStorage.getItem(REPORT_CACHE_KEY);
+
+    if (cache) {
+        const saved = JSON.parse(cache);
+        if (Date.now() - saved.time < REPORT_CACHE_TIME) {
+            return saved.data;
+        }
+    }
+
+    const res = await fetch(API_URL + "?action=reports");
     const data = await res.json();
 
+    localStorage.setItem(
+        REPORT_CACHE_KEY,
+        JSON.stringify({
+            time: Date.now(),
+            data: data
+        })
+    );
+
+    return data;
+}
+
+function loadReports(data){
     let htmlChung = "";
     let htmlRieng = "";
 
@@ -136,7 +163,7 @@ async function loadReports(){
             htmlChung += taoCard(item, "📋");
         }
 
-        if (loai === "rieng" && itemDiem === diem.toLowerCase()) {
+        if (loai === "rieng" && itemDiem === diemLower) {
             htmlRieng += taoCard(item, "🏢");
         }
     });
@@ -161,51 +188,72 @@ onAuthStateChanged(auth, async (user) => {
         return;
     }
 
-    const users = await getUsers();
-    const email = user.email.toLowerCase().trim();
+    try {
+        const [users, reports] = await Promise.all([
+            getUsers(),
+            getReports()
+        ]);
 
-    const currentUser = users.find(u =>
-        String(u.email).toLowerCase().trim() === email
-    );
+        const email = user.email.toLowerCase().trim();
 
-    if (!currentUser) {
+        const currentUser = users.find(u =>
+            String(u.email).toLowerCase().trim() === email
+        );
+
+        if (!currentUser) {
+            noiDung.style.display = "none";
+            authBox.innerHTML = `
+                <p style="color:#dc2626;font-weight:800;">
+                    ⛔ Tài khoản ${email} không có quyền truy cập.
+                </p>
+                <button onclick="logoutGoogle()">Đăng xuất</button>
+            `;
+            return;
+        }
+
+        const quyen = String(currentUser.quyen || "").toLowerCase().trim();
+        const userDiem = String(currentUser.diem || "").toLowerCase().trim();
+
+        const duocVao =
+            quyen === "admin" ||
+            quyen === "user" ||
+            (quyen === "diem" && userDiem === diemLower);
+
+        if (!duocVao) {
+            noiDung.style.display = "none";
+            authBox.innerHTML = `
+                <p style="color:#dc2626;font-weight:800;">
+                    ⛔ Bạn chỉ được xem báo cáo của điểm được phân quyền.
+                </p>
+                <button onclick="logoutGoogle()">Đăng xuất</button>
+            `;
+            return;
+        }
+
+        authBox.innerHTML = `
+            <p>
+                👤 Đang đăng nhập:
+                <b>${currentUser.hoten || user.displayName}</b>
+                (${email})
+                <button onclick="logoutGoogle()">Đăng xuất</button>
+            </p>
+        `;
+
+        noiDung.style.display = "block";
+        loadReports(reports);
+
+    } catch (error) {
+        console.error(error);
+
         noiDung.style.display = "none";
+
         authBox.innerHTML = `
             <p style="color:#dc2626;font-weight:800;">
-                ⛔ Tài khoản ${email} không có quyền truy cập.
+                Không tải được dữ liệu báo cáo.
             </p>
             <button onclick="logoutGoogle()">Đăng xuất</button>
         `;
-        return;
     }
-
-    const quyen = String(currentUser.quyen || "").toLowerCase().trim();
-    const userDiem = String(currentUser.diem || "").toLowerCase().trim();
-
-    const duocVao =
-        quyen === "admin" ||
-        quyen === "user" ||
-        (quyen === "diem" && userDiem === diem.toLowerCase());
-
-    if (!duocVao) {
-        noiDung.style.display = "none";
-        authBox.innerHTML = `
-            <p style="color:#dc2626;font-weight:800;">
-                ⛔ Bạn chỉ được xem báo cáo của điểm được phân quyền.
-            </p>
-            <button onclick="logoutGoogle()">Đăng xuất</button>
-        `;
-        return;
-    }
-
-    authBox.innerHTML = `
-        <p>👤 Đang đăng nhập: <b>${currentUser.hoten || user.displayName}</b> (${email})
-        <button onclick="logoutGoogle()">Đăng xuất</button></p>
-    `;
-
-    noiDung.style.display = "block";
-
-    loadReports();
 });
 </script>
 
