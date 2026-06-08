@@ -3,9 +3,10 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebas
 import {
   getAuth,
   GoogleAuthProvider,
-  signInWithPopup,
+  signInWithRedirect,
   signOut,
-  onAuthStateChanged
+  onAuthStateChanged,
+  getRedirectResult
 } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
 
 const API_URL = "https://script.google.com/macros/s/AKfycbzgVoPJhFAS3AdWuKk5-W5jXsNPfTxvipIpAV0IxJO285KGOFI5lMRxl6-bFkakuR3U/exec";
@@ -29,15 +30,16 @@ async function getAllowedUsers() {
 }
 
 window.loginGoogle = () => {
-  signInWithPopup(auth, provider).catch(error => {
-    console.error(error);
-    alert("Không thể đăng nhập Google");
-  });
+  signInWithRedirect(auth, provider);
 };
 
 window.logoutGoogle = () => {
   signOut(auth);
 };
+
+getRedirectResult(auth).catch(error => {
+  console.error(error);
+});
 
 onAuthStateChanged(auth, async (user) => {
   const loginBox = document.getElementById("login-box");
