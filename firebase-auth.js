@@ -3,6 +3,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebas
 import {
   getAuth,
   GoogleAuthProvider,
+  signInWithPopup,
   signInWithRedirect,
   signOut,
   onAuthStateChanged,
@@ -30,7 +31,20 @@ async function getAllowedUsers() {
 }
 
 window.loginGoogle = () => {
-  signInWithRedirect(auth, provider);
+  sessionStorage.setItem("scrollY", String(window.scrollY));
+
+  const ua = navigator.userAgent.toLowerCase();
+  const isIOS = /iphone|ipad|ipod/.test(ua);
+  const isZalo = ua.includes("zalo");
+
+  if (isIOS || isZalo) {
+    signInWithRedirect(auth, provider);
+  } else {
+    signInWithPopup(auth, provider).catch(error => {
+      console.error(error);
+      alert("Không thể đăng nhập Google");
+    });
+  }
 };
 
 window.logoutGoogle = () => {
@@ -62,7 +76,6 @@ onAuthStateChanged(auth, async (user) => {
 
   try {
     const users = await getAllowedUsers();
-
     const email = user.email.toLowerCase().trim();
 
     const currentUser = users.find(u =>
@@ -91,6 +104,14 @@ onAuthStateChanged(auth, async (user) => {
         <button onclick="logoutGoogle()">Đăng xuất</button>
       </p>
     `;
+
+    const y = sessionStorage.getItem("scrollY");
+    if (y) {
+      setTimeout(() => {
+        window.scrollTo(0, Number(y));
+        sessionStorage.removeItem("scrollY");
+      }, 300);
+    }
 
   } catch (error) {
     console.error(error);
