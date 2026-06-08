@@ -10,68 +10,18 @@
 <link rel="icon" type="image/x-icon" href="images/favicon.ico">
 
 <style>
-.report-header{
-    background:#fff;
-    border-radius:20px;
-    padding:30px;
-    text-align:center;
-    box-shadow:0 8px 25px rgba(0,0,0,.06);
-    margin-bottom:30px;
-}
-
-.report-header h1{
-    color:#003d82;
-    font-size:30px;
-    margin-bottom:10px;
-}
-
-.report-header p{
-    color:#475569;
-    font-weight:600;
-    font-size:18px;
-}
-
-.report-card a{
-    min-height:180px;
-}
-
-.report-card span{
-    font-size:48px;
-    margin-bottom:12px;
-}
-
-.report-card small{
-    margin-top:10px;
-    color:#64748b;
-    font-weight:600;
-}
-
-.back-home{
-    text-align:center;
-    margin-top:50px;
-}
-
-.back-home a{
-    display:inline-block;
-    background:#0056b3;
-    color:white;
-    padding:14px 28px;
-    border-radius:999px;
-    text-decoration:none;
-    font-weight:800;
-}
-
-.empty-box{
-    background:#fff;
-    border-radius:15px;
-    padding:20px;
-    text-align:center;
-    color:#64748b;
-    font-weight:600;
-    box-shadow:0 8px 25px rgba(0,0,0,.06);
-}
+.report-header{background:#fff;border-radius:20px;padding:30px;text-align:center;box-shadow:0 8px 25px rgba(0,0,0,.06);margin-bottom:30px}
+.report-header h1{color:#003d82;font-size:30px;margin-bottom:10px}
+.report-header p{color:#475569;font-weight:600;font-size:18px}
+.report-card a{min-height:180px}
+.report-card span{font-size:48px;margin-bottom:12px}
+.report-card small{margin-top:10px;color:#64748b;font-weight:600}
+.back-home{text-align:center;margin-top:50px}
+.back-home a{display:inline-block;background:#0056b3;color:white;padding:14px 28px;border-radius:999px;text-decoration:none;font-weight:800}
+.empty-box{background:#fff;border-radius:15px;padding:20px;text-align:center;color:#64748b;font-weight:600;box-shadow:0 8px 25px rgba(0,0,0,.06)}
+.auth-box{text-align:center;margin:20px 0}
+.auth-box button{background:#0056b3;color:#fff;border:none;padding:10px 18px;border-radius:999px;font-weight:800;cursor:pointer}
 </style>
-
 </head>
 
 <body>
@@ -83,11 +33,15 @@
         <p id="ten-diem">Đang tải dữ liệu...</p>
     </div>
 
-    <h2 class="section-title">📋 Báo cáo chung</h2>
-    <section id="bao-cao-chung" class="grid"></section>
+    <div id="auth-box" class="auth-box"></div>
 
-    <h2 class="section-title">🏢 Báo cáo riêng</h2>
-    <section id="bao-cao-rieng" class="grid"></section>
+    <div id="noi-dung-bao-cao" style="display:none;">
+        <h2 class="section-title">📋 Báo cáo chung</h2>
+        <section id="bao-cao-chung" class="grid"></section>
+
+        <h2 class="section-title">🏢 Báo cáo riêng</h2>
+        <section id="bao-cao-rieng" class="grid"></section>
+    </div>
 
     <div class="back-home">
         <a href="index.html">← Quay lại Trang chủ</a>
@@ -95,10 +49,31 @@
 
 </div>
 
-<script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
 
-const API_URL =
-"https://script.google.com/macros/s/AKfycbzgVoPJhFAS3AdWuKk5-W5jXsNPfTxvipIpAV0IxJO285KGOFI5lMRxl6-bFkakuR3U/exec";
+import {
+  getAuth,
+  GoogleAuthProvider,
+  signInWithPopup,
+  signOut,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
+
+const API_URL = "https://script.google.com/macros/s/AKfycbzgVoPJhFAS3AdWuKk5-W5jXsNPfTxvipIpAV0IxJO285KGOFI5lMRxl6-bFkakuR3U/exec";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCyHS-jYLZQvrysbhV7UhQOtl42CX7Em_g",
+  authDomain: "chinhanh10-web.firebaseapp.com",
+  projectId: "chinhanh10-web",
+  storageBucket: "chinhanh10-web.firebasestorage.app",
+  messagingSenderId: "75779781593",
+  appId: "1:75779781593:web:5748e89fc7b5dbb3c5dfc8"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const provider = new GoogleAuthProvider();
 
 const TEN_DIEM = {
     TamHung:"Điểm hỗ trợ dịch vụ công số Tam Hưng",
@@ -121,92 +96,117 @@ const diem = params.get("diem");
 document.getElementById("ten-diem").innerText =
     TEN_DIEM[diem] || "Hệ thống báo cáo";
 
-function taoCard(item, icon){
+window.loginGoogle = () => {
+    signInWithPopup(auth, provider);
+};
 
+window.logoutGoogle = () => {
+    signOut(auth);
+};
+
+function taoCard(item, icon){
     return `
         <div class="item report-card">
             <a href="${item.link}" target="_blank">
-
                 <span>${icon}</span>
-
                 <p>${item.ten}</p>
-
-                <small>
-                    Nhấn để mở
-                </small>
-
+                <small>Nhấn để mở</small>
             </a>
         </div>
     `;
 }
 
-fetch(API_URL + "?action=reports&t=" + Date.now())
+async function getUsers(){
+    const res = await fetch(API_URL + "?action=users&t=" + Date.now());
+    return await res.json();
+}
 
-.then(response => response.json())
-
-.then(data => {
+async function loadReports(){
+    const res = await fetch(API_URL + "?action=reports&t=" + Date.now());
+    const data = await res.json();
 
     let htmlChung = "";
     let htmlRieng = "";
 
     data.forEach(item => {
+        const loai = String(item.loai || "").trim().toLowerCase();
+        const itemDiem = String(item.diem || "").trim().toLowerCase();
 
-        const loai =
-        String(item.loai || "").trim();
-
-        const itemDiem =
-        String(item.diem || "").trim();
-
-        if (loai === "Chung") {
-
-            htmlChung +=
-            taoCard(item,"📋");
-
+        if (loai === "chung") {
+            htmlChung += taoCard(item, "📋");
         }
 
-        if (
-            loai === "Rieng" &&
-            itemDiem === diem
-        ) {
-
-            htmlRieng +=
-            taoCard(item,"🏢");
-
+        if (loai === "rieng" && itemDiem === diem.toLowerCase()) {
+            htmlRieng += taoCard(item, "🏢");
         }
-
     });
 
-    document.getElementById(
-        "bao-cao-chung"
-    ).innerHTML =
-        htmlChung ||
-        `<div class="empty-box">
-            Chưa có báo cáo chung.
-        </div>`;
+    document.getElementById("bao-cao-chung").innerHTML =
+        htmlChung || `<div class="empty-box">Chưa có báo cáo chung.</div>`;
 
-    document.getElementById(
-        "bao-cao-rieng"
-    ).innerHTML =
-        htmlRieng ||
-        `<div class="empty-box">
-            Chưa có báo cáo riêng cho điểm này.
-        </div>`;
+    document.getElementById("bao-cao-rieng").innerHTML =
+        htmlRieng || `<div class="empty-box">Chưa có báo cáo riêng cho điểm này.</div>`;
+}
 
-})
+onAuthStateChanged(auth, async (user) => {
+    const authBox = document.getElementById("auth-box");
+    const noiDung = document.getElementById("noi-dung-bao-cao");
 
-.catch(error => {
+    if (!user) {
+        noiDung.style.display = "none";
+        authBox.innerHTML = `
+            <p>🔒 Bạn cần đăng nhập để xem báo cáo.</p>
+            <button onclick="loginGoogle()">Đăng nhập Google</button>
+        `;
+        return;
+    }
 
-    console.error(error);
+    const users = await getUsers();
+    const email = user.email.toLowerCase().trim();
 
-    document.getElementById(
-        "bao-cao-chung"
-    ).innerHTML =
-        `<div class="empty-box">
-            Không tải được dữ liệu báo cáo.
-        </div>`;
+    const currentUser = users.find(u =>
+        String(u.email).toLowerCase().trim() === email
+    );
 
+    if (!currentUser) {
+        noiDung.style.display = "none";
+        authBox.innerHTML = `
+            <p style="color:#dc2626;font-weight:800;">
+                ⛔ Tài khoản ${email} không có quyền truy cập.
+            </p>
+            <button onclick="logoutGoogle()">Đăng xuất</button>
+        `;
+        return;
+    }
+
+    const quyen = String(currentUser.quyen || "").toLowerCase().trim();
+    const userDiem = String(currentUser.diem || "").toLowerCase().trim();
+
+    const duocVao =
+        quyen === "admin" ||
+        quyen === "user" ||
+        (quyen === "diem" && userDiem === diem.toLowerCase());
+
+    if (!duocVao) {
+        noiDung.style.display = "none";
+        authBox.innerHTML = `
+            <p style="color:#dc2626;font-weight:800;">
+                ⛔ Bạn chỉ được xem báo cáo của điểm được phân quyền.
+            </p>
+            <button onclick="logoutGoogle()">Đăng xuất</button>
+        `;
+        return;
+    }
+
+    authBox.innerHTML = `
+        <p>👤 Đang đăng nhập: <b>${currentUser.hoten || user.displayName}</b> (${email})
+        <button onclick="logoutGoogle()">Đăng xuất</button></p>
+    `;
+
+    noiDung.style.display = "block";
+
+    loadReports();
 });
-
 </script>
 
 </body>
