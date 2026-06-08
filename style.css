@@ -426,17 +426,12 @@ footer p{
 }
 /* ================= TUYẾT RƠI ================= */
 
-body{
-    position:relative;
-    isolation:isolate;
-}
-
 #snow{
     position:fixed;
     inset:0;
     pointer-events:none;
     overflow:hidden;
-    z-index:-1;
+    z-index:9999;
 }
 
 .snowflake{
@@ -444,6 +439,7 @@ body{
     top:-60px;
     color:#a5e4ec;
     user-select:none;
+    pointer-events:none;
 
     text-shadow:
         0 0 5px rgba(159,217,228,.8),
