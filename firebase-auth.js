@@ -8,7 +8,7 @@ import {
   onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
 
-const API_URL = "https://script.google.com/macros/s/AKfycbzBpjLcr3weEaJQx9IsW3yrt3tvpea3mjgfv3gfDZXnEQS3dkrgEHcbIrx8qOa6yUF7/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbzgVoPJhFAS3AdWuKk5-W5jXsNPfTxvipIpAV0IxJO285KGOFI5lMRxl6-bFkakuR3U/exec";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCyHS-jYLZQvrysbhV7UhQOtl42CX7Em_g",
