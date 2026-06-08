@@ -1,7 +1,7 @@
 const API_URL = "https://script.google.com/macros/s/AKfycbzBpjLcr3weEaJQx9IsW3yrt3tvpea3mjgfv3gfDZXnEQS3dkrgEHcbIrx8qOa6yUF7/exec";
 
 function loadTasks() {
-  fetch(API_URL + "?t=" + Date.now())
+  fetch(API_URL + "?action=tasks&t=" + Date.now())
     .then(response => response.json())
     .then(data => {
       const tbody = document.getElementById("task-list");
